@@ -2,6 +2,7 @@ import { cn } from "cn";
 import { drag } from "d3-drag";
 import { select } from "d3-selection";
 import { useEffect, useRef, useState } from "react";
+import type { notesTable } from "@/db/schema";
 import type { Camera, Color } from "@/types";
 
 const COLORS: Record<Color, string> = {
@@ -13,8 +14,14 @@ const COLORS: Record<Color, string> = {
   yellow: "bg-pastel-yellow",
 };
 
-export function Note({ camera, color }: { camera: Camera; color: Color }) {
-  const [note, setNote] = useState({ x: 100, y: 100 });
+export function Note({
+  camera,
+  note,
+}: {
+  camera: Camera;
+  note: typeof notesTable.$inferSelect;
+}) {
+  const [notePos, setNotePos] = useState({ x: note.x, y: note.y });
   const noteRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -28,7 +35,7 @@ export function Note({ camera, color }: { camera: Camera; color: Color }) {
         event.sourceEvent.stopPropagation();
       })
       .on("drag", (event) => {
-        setNote((yesNote) => ({
+        setNotePos((yesNote) => ({
           x: yesNote.x + event.dx / camera.scale,
           y: yesNote.y + event.dy / camera.scale,
         }));
@@ -45,16 +52,13 @@ export function Note({ camera, color }: { camera: Camera; color: Color }) {
   return (
     <div
       className={cn(
-        "absolute w-sm rounded-sm bg-pastel-green p-4 font-medium shadow-md",
-        COLORS[color]
+        "absolute w-sm whitespace-pre-wrap rounded-sm bg-pastel-green p-4 font-medium shadow-md",
+        COLORS[note.color]
       )}
       ref={noteRef}
-      style={{ left: note.x, top: note.y }}
+      style={{ left: notePos.x, top: notePos.y }}
     >
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-      commodo consequat.
+      {note.text}
     </div>
   );
 }
