@@ -10,7 +10,6 @@
     "start": "next start"
   },
   "dependencies": {
-    "@types/d3-selection": "^3.0.11",
     "cn": "^0.2.4",
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",
@@ -25,6 +24,7 @@
     "@biomejs/biome": "^2.5.9",
     "@tailwindcss/postcss": "^4",
     "@types/d3-drag": "^3.0.7",
+    "@types/d3-selection": "^3.0.11",
     "@types/d3-zoom": "^3.0.8",
     "@types/node": "^20",
     "@types/react": "^19",
