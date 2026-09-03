@@ -1,68 +1,60 @@
-import type Konva from "konva";
-import type { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
-import { useCallback, useRef } from "react";
-import { Group, Rect, Text } from "react-konva";
-import { useNoteStore } from "@/stores/note";
+import { cn } from "cn";
+import { drag } from "d3-drag";
+import { select } from "d3-selection";
+import { useEffect, useRef, useState } from "react";
+import type { Camera } from "@/types";
 
-const NOTE_WIDTH = 400;
-const NOTE_HEIGHT = 400;
-const NOTE_PADDING = 16;
+const COLORS: Record<string, string> = {
+  blue: "bg-pastel-blue",
+  green: "bg-pastel-green",
+  orange: "bg-pastel-orange",
+  pink: "bg-pastel-pink",
+  purple: "bg-pastel-purple",
+  yellow: "bg-pastel-yellow",
+};
 
-export function Note({ color, id }: { color: string; id: string }) {
-  const { selectedNote, setSelectedNote } = useNoteStore();
+export function Note({ camera, color }: { camera: Camera; color: string }) {
+  const [note, setNote] = useState({ x: 100, y: 100 });
+  const noteRef = useRef<HTMLDivElement | null>(null);
 
-  const groupRef = useRef<Konva.Group | null>(null);
-
-  const moveToTop = useCallback(
-    (e: KonvaEventObject<MouseEvent, Node<NodeConfig>>) => {
-      e.currentTarget.moveToTop();
-      if (selectedNote !== e.currentTarget) {
-        setSelectedNote(null);
-      }
-    },
-    [setSelectedNote, selectedNote]
-  );
-
-  const handleDoubleTapOrClick = useCallback(() => {
-    if (selectedNote === groupRef.current) {
-      setSelectedNote(null);
-    } else {
-      setSelectedNote(groupRef.current);
+  useEffect(() => {
+    const node = noteRef.current;
+    if (node === null) {
+      return;
     }
-  }, [setSelectedNote, selectedNote]);
 
-  const isSelected = selectedNote !== null && groupRef.current === selectedNote;
+    const behavior = drag<HTMLDivElement, unknown>()
+      .on("start", (event) => {
+        event.sourceEvent.stopPropagation();
+      })
+      .on("drag", (event) => {
+        setNote((yesNote) => ({
+          x: yesNote.x + event.dx / camera.scale,
+          y: yesNote.y + event.dy / camera.scale,
+        }));
+        select(node).raise();
+      });
+
+    select(node).call(behavior);
+
+    return () => {
+      select(node).on(".drag", null);
+    };
+  }, [camera.scale]);
 
   return (
-    <Group
-      draggable
-      name={id}
-      onClick={moveToTop}
-      onDblClick={handleDoubleTapOrClick}
-      onDblTap={handleDoubleTapOrClick}
-      onDragStart={moveToTop}
-      ref={groupRef}
-      x={90}
-      y={90}
+    <div
+      className={cn(
+        "absolute w-sm rounded-sm bg-pastel-green p-4 font-medium shadow-md",
+        COLORS[color]
+      )}
+      ref={noteRef}
+      style={{ left: note.x, top: note.y }}
     >
-      <Rect
-        fill={color}
-        height={NOTE_WIDTH}
-        shadowBlur={5}
-        shadowColor="rgba(0,0,0,0.25)"
-        shadowOffsetY={0}
-        stroke={isSelected ? "rgba(255,40,0,0.5)" : "rgba(0,0,0,0.25)"}
-        strokeWidth={isSelected ? 4 : 1}
-        width={NOTE_HEIGHT}
-      />
-      <Text
-        fontFamily="Nanum Pen Script, Nanum Pen Script Fallback"
-        fontSize={20}
-        text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-        width={NOTE_WIDTH - NOTE_PADDING * 2}
-        x={NOTE_PADDING}
-        y={NOTE_PADDING}
-      />
-    </Group>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+      commodo consequat.
+    </div>
   );
 }

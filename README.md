@@ -10,4 +10,4 @@ the core interaction is: create a note, drag it anywhere, color it, done.
 
 - [ ] support markdown
 - [ ] auto save
-- [x] tap/click/drag to move front
+- [ ] tap/click/drag to move front

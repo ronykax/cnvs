@@ -10,17 +10,22 @@
     "start": "next start"
   },
   "dependencies": {
-    "konva": "^10.3.2",
+    "@types/d3-selection": "^3.0.11",
+    "cn": "^0.2.4",
+    "d3-drag": "^3.0.0",
+    "d3-selection": "^3.0.0",
+    "d3-zoom": "^3.0.0",
     "lucide-react": "^1.39.0",
     "next": "16.3.4",
     "react": "19.2.8",
     "react-dom": "19.2.8",
-    "react-konva": "^19.2.5",
     "zustand": "^5.0.15"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.9",
     "@tailwindcss/postcss": "^4",
+    "@types/d3-drag": "^3.0.7",
+    "@types/d3-zoom": "^3.0.8",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

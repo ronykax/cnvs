@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: rgba(245, 224, 140, 0.15);
   --foreground: #000000;
 
   --pastel-yellow: #f5e08c;
@@ -30,9 +30,9 @@ body {
   background: var(--background);
 }
 
-@layer base {
+/* @layer base {
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
-}
+} */

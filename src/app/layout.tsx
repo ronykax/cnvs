@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Nanum_Pen_Script } from "next/font/google";
+import { Shantell_Sans } from "next/font/google";
 import "./globals.css";
 
-const font = Nanum_Pen_Script({ weight: "400" });
+const font = Shantell_Sans();
 
 export const metadata: Metadata = {
   description: "lorem ipsum dolor sit amet, consectetur adipiscing elit.",
