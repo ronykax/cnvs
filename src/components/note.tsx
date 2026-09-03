@@ -2,9 +2,9 @@ import { cn } from "cn";
 import { drag } from "d3-drag";
 import { select } from "d3-selection";
 import { useEffect, useRef, useState } from "react";
-import type { Camera } from "@/types";
+import type { Camera, Color } from "@/types";
 
-const COLORS: Record<string, string> = {
+const COLORS: Record<Color, string> = {
   blue: "bg-pastel-blue",
   green: "bg-pastel-green",
   orange: "bg-pastel-orange",
@@ -13,7 +13,7 @@ const COLORS: Record<string, string> = {
   yellow: "bg-pastel-yellow",
 };
 
-export function Note({ camera, color }: { camera: Camera; color: string }) {
+export function Note({ camera, color }: { camera: Camera; color: Color }) {
   const [note, setNote] = useState({ x: 100, y: 100 });
   const noteRef = useRef<HTMLDivElement | null>(null);
 

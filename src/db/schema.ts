@@ -1,8 +1,10 @@
-import { int, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { real, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import type { Color } from "@/types";
 
-export const usersTable = sqliteTable("users", {
-  age: int().notNull(),
-  email: text().notNull().unique(),
-  id: int().primaryKey({ autoIncrement: true }),
-  name: text().notNull(),
+export const notes = sqliteTable("notes", {
+  color: text("color").$type<Color>().notNull(),
+  id: text("id").primaryKey(),
+  text: text("text").notNull(),
+  x: real("x").notNull(),
+  y: real("y").notNull(),
 });
