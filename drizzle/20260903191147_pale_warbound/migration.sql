@@ -1,4 +1,4 @@
-CREATE TABLE `user` (
+CREATE TABLE `users` (
 	`age` integer NOT NULL,
 	`email` text NOT NULL UNIQUE,
 	`id` integer PRIMARY KEY AUTOINCREMENT,

@@ -1,9 +1,9 @@
 {
   "version": "7",
   "dialect": "sqlite",
-  "id": "4991da41-9cff-4573-a581-fe9291560a1d",
+  "id": "6a4deef7-65a8-4438-90c5-2ad70c7c4234",
   "prevIds": [
-    "c4426172-17eb-4cde-87cc-61431b7b0f2c"
+    "00000000-0000-0000-0000-000000000000"
   ],
   "ddl": [
     {
@@ -55,7 +55,7 @@
         "id"
       ],
       "nameExplicit": false,
-      "name": "user_pk",
+      "name": "users_pk",
       "table": "users",
       "entityType": "pks"
     },
@@ -64,12 +64,10 @@
         "email"
       ],
       "nameExplicit": false,
-      "name": "user_email_unique",
+      "name": "users_email_unique",
       "entityType": "uniques",
       "table": "users"
     }
   ],
-  "renames": [
-    "user->users"
-  ]
+  "renames": []
 }
