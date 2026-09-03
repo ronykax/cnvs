@@ -73,6 +73,7 @@ export function StageWrapper({
 
   return (
     <Stage
+      draggable
       height={typeof window === "undefined" ? 0 : window.innerHeight}
       onWheel={handleWheel}
       ref={stageRef}
@@ -83,10 +84,10 @@ export function StageWrapper({
       </Layer>
 
       <Layer ref={layerRef}>
-        <Note color="#FFC9C9" />
-        <Note color="#B3F2BB" />
-        <Note color="#A5D8FE" />
-        <Note color="#FFEC99" />
+        <Note color="#FFC9C9" id="wrQZY1" />
+        <Note color="#B3F2BB" id="q8LmFx" />
+        <Note color="#A5D8FE" id="5uLdNV" />
+        <Note color="#FFEC99" id="mWyOWp" />
       </Layer>
     </Stage>
   );

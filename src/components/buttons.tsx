@@ -1,23 +1,27 @@
 import type Konva from "konva";
 import { FilePlus2Icon, Trash2Icon } from "lucide-react";
 import { type RefObject, useCallback } from "react";
+import { useNoteStore } from "@/stores/note";
 
 export function Buttons({
   showDeleteButton,
-  layerRef,
 }: {
   stageRef: RefObject<Konva.Stage | null>;
   showDeleteButton: boolean;
   layerRef: RefObject<Konva.Layer | null>;
 }) {
-  const handleTrash = useCallback(() => {
-    if (!layerRef.current) {
-      return;
-    }
+  const selectedNode = useNoteStore((s) => s.selectedNote);
 
-    const notes = layerRef.current.find(".balls");
-    notes[0].destroy();
-  }, [layerRef]);
+  const handleTrash = useCallback(() => {
+    // if (!layerRef.current) {
+    //   return;
+    // }
+
+    // const notes = layerRef.current.find(".balls");
+    // notes[0].destroy();
+
+    selectedNode?.destroy();
+  }, [selectedNode]);
 
   return (
     <div className="fixed right-8 bottom-8 flex items-center gap-2">
