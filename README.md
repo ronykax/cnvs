@@ -18,3 +18,4 @@ the core interaction is: add a note, pick a color for it, drag it anywhere, done
 - [ ] cmd+return to save note
 - [ ] change note color
 - [ ] search
+- [ ] customizable font
