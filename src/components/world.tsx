@@ -78,6 +78,8 @@ export function World({
     });
   }, []);
 
+  const dotRadius = Math.max(0.5, 1.5 * camera.scale);
+
   return (
     <>
       <div
@@ -85,6 +87,11 @@ export function World({
         // blur
         // onClick={() => console.log("blur")}
         ref={viewportRef}
+        style={{
+          backgroundImage: `radial-gradient(circle, rgba(0,0,0,0.5) ${dotRadius}px, transparent ${dotRadius}px)`,
+          backgroundPosition: `${camera.x}px ${camera.y}px`,
+          backgroundSize: `${32 * camera.scale}px ${32 * camera.scale}px`,
+        }}
       >
         <div
           className="relative"

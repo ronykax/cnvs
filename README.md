@@ -12,7 +12,7 @@ the core interaction is: add a note, pick a color for it, drag it anywhere, done
 - [ ] arrow key note selection
 - [ ] viewport culling
 - [ ] local indexeddb cache
-- [ ] dotted background
+- [x] dotted background
 - [ ] zoom level and cords on bottom left
 - [ ] snap to grid?
 - [ ] cmd+return to save note
