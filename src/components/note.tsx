@@ -149,49 +149,53 @@ export function Note({
         <Dialog.Backdrop className="fixed inset-0 min-h-dvh bg-black/10 backdrop-blur-sm" />
         <Dialog.Popup
           className={cn(
-            "fixed top-1/2 left-1/2 w-sm -translate-x-1/2 -translate-y-1/2 rounded-sm p-4 shadow-md",
+            "fixed top-1/2 left-1/2 w-sm -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-sm shadow-md",
             COLORS[note.color]
           )}
         >
-          <div className="flex flex-col gap-1">
-            <Dialog.Title className="font-semibold text-2xl">
-              Edit note
-            </Dialog.Title>
-            <Dialog.Description className="font-medium opacity-80">
+          <div className="flex flex-col gap-1 p-4">
+            <Dialog.Title className="font-bold">
               January 20, 2008 at 7:39 PM
+            </Dialog.Title>
+            <Dialog.Description className="font-medium text-sm opacity-80">
+              Use{" "}
+              <span className="rounded-sm bg-black/10 px-1 font-mono font-semibold tracking-tight">
+                cmd + return
+              </span>{" "}
+              to save.
             </Dialog.Description>
+          </div>
 
-            <textarea
-              className="mt-4 min-h-96 rounded-sm bg-black/10 p-4 font-medium"
-              onChange={handleTextChange}
-              value={text}
-            />
+          <textarea
+            className="block min-h-96 w-full resize-none rounded-sm bg-black/10 p-4 font-medium focus:outline-none"
+            onChange={handleTextChange}
+            value={text}
+          />
 
-            <div className="mt-4 flex gap-2">
-              <Dialog.Close
-                render={
-                  <button
-                    className="flex w-full items-center justify-center gap-2 rounded-sm bg-red-400 px-3 py-2 font-medium shadow-sm"
-                    type="button"
-                  />
-                }
-              >
-                <XIcon className="size-4" />
-                Cancel
-              </Dialog.Close>
-              <Dialog.Close
-                render={
-                  <button
-                    className="flex w-full items-center justify-center gap-2 rounded-sm bg-green-400 px-3 py-2 font-medium shadow-sm"
-                    onClick={handleSave}
-                    type="button"
-                  />
-                }
-              >
-                <CheckIcon className="size-4" />
-                Save
-              </Dialog.Close>
-            </div>
+          <div className="flex">
+            <Dialog.Close
+              render={
+                <button
+                  className="flex w-full items-center justify-center gap-2 bg-red-400 px-3 py-2 font-medium shadow-sm"
+                  type="button"
+                />
+              }
+            >
+              <XIcon className="size-4" />
+              Cancel
+            </Dialog.Close>
+            <Dialog.Close
+              render={
+                <button
+                  className="flex w-full items-center justify-center gap-2 bg-green-400 px-3 py-2 font-medium shadow-sm"
+                  onClick={handleSave}
+                  type="button"
+                />
+              }
+            >
+              <CheckIcon className="size-4" />
+              Save
+            </Dialog.Close>
           </div>
         </Dialog.Popup>
       </Dialog.Portal>
