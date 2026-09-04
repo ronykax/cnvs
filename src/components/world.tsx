@@ -4,21 +4,26 @@ import { select } from "d3-selection";
 import { zoom, zoomIdentity } from "d3-zoom";
 import { PlusIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { createNote } from "@/app/actions";
-import type { notesTable } from "@/db/schema";
+import { createNote, getNotesFromDb } from "@/app/actions";
 import type { Camera } from "@/types";
+import { useWorldStore } from "@/world-store";
 import { Note } from "./note";
 
 const INITIAL_CAMERA: Camera = { scale: 1, x: 0, y: 0 };
 
-export function World({
-  notes,
-}: {
-  notes: (typeof notesTable.$inferSelect)[];
-}) {
+export function World() {
   const viewportRef = useRef<HTMLDivElement | null>(null);
-
   const [camera, setCamera] = useState<Camera>(INITIAL_CAMERA);
+  const notes = useWorldStore((state) => state.notes);
+  const setNotes = useWorldStore((state) => state.setNotes);
+
+  useEffect(() => {
+    getNotesFromDb().then((data) => {
+      if (Array.isArray(data)) {
+        setNotes(data);
+      }
+    });
+  }, [setNotes]);
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -74,7 +79,7 @@ export function World({
             transformOrigin: "0 0",
           }}
         >
-          {notes.map((note) => (
+          {Object.values(notes).map((note) => (
             <Note camera={camera} key={note.id} note={note} />
           ))}
         </div>

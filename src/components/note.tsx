@@ -3,11 +3,19 @@ import { cn } from "cn";
 import { drag } from "d3-drag";
 import { select } from "d3-selection";
 import { CheckIcon, XIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import {
+  type ChangeEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { updateNoteInDb } from "@/app/actions";
 import type { notesTable } from "@/db/schema";
 import type { Camera, Color } from "@/types";
+import { useWorldStore } from "@/world-store";
 
 const COLORS: Record<Color, string> = {
   blue: "bg-pastel-blue",
@@ -26,11 +34,14 @@ export function Note({
   camera: Camera;
   note: typeof notesTable.$inferSelect;
 }) {
-  const [notePos, setNotePos] = useState({ x: note.x, y: note.y });
-  const noteRef = useRef<HTMLDivElement | null>(null);
+  const [text, setText] = useState(note.text);
+  const elementRef = useRef<HTMLDivElement | null>(null);
+
+  const cameraRef = useRef(camera);
+  cameraRef.current = camera;
 
   useEffect(() => {
-    const node = noteRef.current;
+    const node = elementRef.current;
     if (node === null) {
       return;
     }
@@ -38,13 +49,18 @@ export function Note({
     const behavior = drag<HTMLDivElement, unknown>()
       .on("start", (event) => {
         event.sourceEvent.stopPropagation();
+        select(node).raise();
       })
       .on("drag", (event) => {
-        setNotePos((yesNote) => ({
-          x: yesNote.x + event.dx / camera.scale,
-          y: yesNote.y + event.dy / camera.scale,
-        }));
-        select(node).raise();
+        const current = useWorldStore.getState().notes[note.id];
+        useWorldStore.getState().updateNote(note.id, {
+          x: current.x + event.dx / cameraRef.current.scale,
+          y: current.y + event.dy / cameraRef.current.scale,
+        });
+      })
+      .on("end", () => {
+        const current = useWorldStore.getState().notes[note.id];
+        updateNoteInDb(note.id, { x: current.x, y: current.y });
       });
 
     select(node).call(behavior);
@@ -52,7 +68,18 @@ export function Note({
     return () => {
       select(node).on(".drag", null);
     };
-  }, [camera.scale]);
+  }, [note.id]);
+
+  const handleTextChange = useCallback(
+    (e: ChangeEvent<HTMLTextAreaElement, HTMLTextAreaElement>) =>
+      setText(e.currentTarget.value),
+    []
+  );
+
+  const handleSave = useCallback(() => {
+    useWorldStore.getState().updateNote(note.id, { text });
+    updateNoteInDb(note.id, { text });
+  }, [note.id, text]);
 
   return (
     <Dialog.Root>
@@ -64,8 +91,8 @@ export function Note({
               "group absolute flex w-sm flex-col gap-2 overflow-hidden rounded-sm p-4 font-medium shadow-md",
               COLORS[note.color]
             )}
-            ref={noteRef}
-            style={{ left: notePos.x, top: notePos.y }}
+            ref={elementRef}
+            style={{ left: note.x, top: note.y }}
           />
         }
       >
@@ -136,7 +163,8 @@ export function Note({
 
             <textarea
               className="mt-4 min-h-96 rounded-sm bg-black/10 p-4 font-medium"
-              defaultValue={note.text}
+              onChange={handleTextChange}
+              value={text}
             />
 
             <div className="mt-4 flex gap-2">
@@ -155,6 +183,7 @@ export function Note({
                 render={
                   <button
                     className="flex w-full items-center justify-center gap-2 rounded-sm bg-green-400 px-3 py-2 font-medium shadow-sm"
+                    onClick={handleSave}
                     type="button"
                   />
                 }
