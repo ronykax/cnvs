@@ -5,8 +5,8 @@ import "./globals.css";
 const font = Shantell_Sans();
 
 export const metadata: Metadata = {
-  description: "lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  title: "corky — digital corkboard",
+  description: "an infinite canvas for your thoughts, ideas, and messy notes.",
+  title: "cnvs — infinite canvas",
 };
 
 export default function ({ children }: LayoutProps<"/">) {
