@@ -11,6 +11,18 @@ import { Note } from "./note";
 
 const INITIAL_CAMERA: Camera = { scale: 1, x: 0, y: 0 };
 
+function getSavedCamera(): Camera {
+  if (typeof window === "undefined") {
+    return INITIAL_CAMERA;
+  }
+  try {
+    const saved = localStorage.getItem("camera");
+    return saved ? JSON.parse(saved) : INITIAL_CAMERA;
+  } catch {
+    return INITIAL_CAMERA;
+  }
+}
+
 export function World() {
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const [camera, setCamera] = useState<Camera>(INITIAL_CAMERA);
@@ -37,16 +49,18 @@ export function World() {
       .scaleExtent([0.1, 10])
       .on("zoom", (event) => {
         const { x, y, k } = event.transform;
-        setCamera({ scale: k, x, y });
+        const next = { scale: k, x, y };
+        setCamera(next);
+        localStorage.setItem("camera", JSON.stringify(next));
       });
 
     selection.call(behavior);
 
+    const initial = getSavedCamera();
+
     selection.call(
       behavior.transform,
-      zoomIdentity
-        .translate(INITIAL_CAMERA.x, INITIAL_CAMERA.y)
-        .scale(INITIAL_CAMERA.scale)
+      zoomIdentity.translate(initial.x, initial.y).scale(initial.scale)
     );
 
     return () => {
