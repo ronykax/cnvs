@@ -12,13 +12,10 @@ import { Note } from "./note";
 const INITIAL_CAMERA: Camera = { scale: 1, x: 0, y: 0 };
 
 export function World({
-  notes: notesFromDb,
+  notes,
 }: {
   notes: (typeof notesTable.$inferSelect)[];
 }) {
-  const [notes, setNotes] =
-    useState<(typeof notesTable.$inferSelect)[]>(notesFromDb);
-
   const viewportRef = useRef<HTMLDivElement | null>(null);
 
   const [camera, setCamera] = useState<Camera>(INITIAL_CAMERA);
@@ -53,24 +50,21 @@ export function World({
   }, []);
 
   const handleNewNote = useCallback(async () => {
-    const result = await createNote({
+    // `_result` here is string (error) or typeof notesTable.$inferSelect
+    const _result = await createNote({
       color: "blue",
       text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
       x: 10,
       y: 10,
     });
-
-    if (typeof result === "string") {
-      console.error(result);
-    } else {
-      setNotes((e) => [...e, result]);
-    }
   }, []);
 
   return (
     <>
       <div
         className="h-screen w-screen cursor-grab touch-none select-none overflow-hidden active:cursor-grabbing"
+        // blur
+        // onClick={() => console.log("blur")}
         ref={viewportRef}
       >
         <div

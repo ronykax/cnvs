@@ -1,11 +1,13 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 :root {
   --background: rgba(245, 224, 140, 0.15);
   --foreground: #000000;
 
   --pastel-yellow: #f5e08c;
-  --pastel-pink: #f0b8c8;
+  --pastel-red: #e8a9a9;
+  --pastel-pink: #eeb7d7;
   --pastel-blue: #a9d3e8;
   --pastel-green: #b9d99a;
   --pastel-orange: #f0b877;
@@ -17,6 +19,7 @@
   --color-foreground: var(--foreground);
 
   --color-pastel-yellow: var(--pastel-yellow);
+  --color-pastel-red: var(--pastel-red);
   --color-pastel-pink: var(--pastel-pink);
   --color-pastel-blue: var(--pastel-blue);
   --color-pastel-green: var(--pastel-green);

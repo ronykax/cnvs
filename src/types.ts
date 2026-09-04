@@ -4,4 +4,11 @@ export interface Camera {
   y: number;
 }
 
-export type Color = "blue" | "green" | "orange" | "pink" | "purple" | "yellow";
+export type Color =
+  | "blue"
+  | "green"
+  | "orange"
+  | "pink"
+  | "purple"
+  | "yellow"
+  | "red";

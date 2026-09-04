@@ -14,6 +14,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@base-ui/react": "^1.8.0",
     "@libsql/client": "^0.18.0",
     "cn": "^0.2.4",
     "d3-drag": "^3.0.0",
@@ -25,11 +26,14 @@
     "next": "16.3.4",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
     "zustand": "^5.0.15"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.9",
     "@tailwindcss/postcss": "^4",
+    "@tailwindcss/typography": "^0.5.20",
     "@types/d3-drag": "^3.0.7",
     "@types/d3-selection": "^3.0.11",
     "@types/d3-zoom": "^3.0.8",

@@ -8,6 +8,7 @@ the core interaction is: add a note, pick a color for it, drag it anywhere, done
 
 ## todo
 
-- [ ] support markdown
+- [x] support markdown
 - [ ] auto save
 - [ ] tap/click/drag to move front
+- [ ] arrow key note selection
