@@ -98,6 +98,9 @@ export function Note({
       >
         <Markdown
           components={{
+            blockquote: ({ children }) => (
+              <blockquote className="font-serif italic">{children}</blockquote>
+            ),
             h1: ({ children }) => (
               <h1 className="font-bold text-2xl">{children}</h1>
             ),
@@ -149,7 +152,7 @@ export function Note({
         <Dialog.Backdrop className="fixed inset-0 min-h-dvh bg-black/10 backdrop-blur-sm" />
         <Dialog.Popup
           className={cn(
-            "fixed top-1/2 left-1/2 w-sm -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-sm shadow-md",
+            "fixed top-1/2 left-1/2 w-xs -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-sm shadow-md md:w-sm",
             COLORS[note.color]
           )}
         >

@@ -4,7 +4,8 @@ import { select } from "d3-selection";
 import { zoom, zoomIdentity } from "d3-zoom";
 import { PlusIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { createNote, getNotesFromDb } from "@/app/actions";
+import { createNote } from "@/app/actions";
+import type { notesTable } from "@/db/schema";
 import type { Camera } from "@/types";
 import { useWorldStore } from "@/world-store";
 import { Note } from "./note";
@@ -23,19 +24,18 @@ function getSavedCamera(): Camera {
   }
 }
 
-export function World() {
+export function World({
+  initialNotes,
+}: {
+  initialNotes: (typeof notesTable.$inferSelect)[];
+}) {
+  useState(() => {
+    useWorldStore.getState().setNotes(initialNotes);
+  });
+
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const [camera, setCamera] = useState<Camera>(INITIAL_CAMERA);
   const notes = useWorldStore((state) => state.notes);
-  const setNotes = useWorldStore((state) => state.setNotes);
-
-  useEffect(() => {
-    getNotesFromDb().then((data) => {
-      if (Array.isArray(data)) {
-        setNotes(data);
-      }
-    });
-  }, [setNotes]);
 
   useEffect(() => {
     const viewport = viewportRef.current;
