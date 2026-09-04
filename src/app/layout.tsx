@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Shantell_Sans } from "next/font/google";
+import { Varela_Round } from "next/font/google";
 import "./globals.css";
 
-const font = Shantell_Sans();
+const font = Varela_Round({ weight: "400" });
 
 export const metadata: Metadata = {
   description: "an infinite canvas for your thoughts, ideas, and messy notes.",
