@@ -98,6 +98,16 @@ export function Note({
       >
         <Markdown
           components={{
+            a: ({ children, href }) => (
+              <a
+                className="underline"
+                href={href}
+                rel="noopener"
+                target="_blank"
+              >
+                {children}
+              </a>
+            ),
             blockquote: ({ children }) => (
               <blockquote className="font-serif italic">{children}</blockquote>
             ),
