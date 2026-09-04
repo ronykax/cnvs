@@ -49,9 +49,9 @@ export function Note({
     const behavior = drag<HTMLDivElement, unknown>()
       .on("start", (event) => {
         event.sourceEvent.stopPropagation();
-        select(node).raise();
       })
       .on("drag", (event) => {
+        select(node).raise();
         const current = useWorldStore.getState().notes[note.id];
         useWorldStore.getState().updateNote(note.id, {
           x: current.x + event.dx / cameraRef.current.scale,
