@@ -51,6 +51,7 @@ export function Note({
     const behavior = drag<HTMLDivElement, unknown>()
       .on("start", (event) => {
         event.sourceEvent.stopPropagation();
+        node.style.cursor = "grabbing";
       })
       .on("drag", (event) => {
         select(node).raise();
@@ -61,6 +62,7 @@ export function Note({
         });
       })
       .on("end", () => {
+        node.style.cursor = "";
         const current = useWorldStore.getState().notes[note.id];
         updateNoteInDb(note.id, { x: current.x, y: current.y });
       });
@@ -95,7 +97,7 @@ export function Note({
         render={
           <div
             className={cn(
-              "group absolute flex w-sm flex-col gap-2 overflow-hidden rounded-sm p-4 font-medium shadow-md",
+              "absolute flex w-sm cursor-grab flex-col gap-2 overflow-hidden rounded-sm p-4 font-medium shadow-md",
               COLORS[note.color]
             )}
             ref={elementRef}

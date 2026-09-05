@@ -1,7 +1,7 @@
 "use client";
 
 import { select } from "d3-selection";
-import { zoom, zoomIdentity } from "d3-zoom";
+import { zoom, zoomIdentity, zoomTransform } from "d3-zoom";
 import { PlusIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createNote } from "@/app/actions";
@@ -47,6 +47,18 @@ export function World({
 
     const behavior = zoom<HTMLDivElement, unknown>()
       .scaleExtent([0.1, 10])
+      .filter((event) => {
+        switch (event.type) {
+          case "mousedown":
+            return false;
+          case "touchstart":
+            return event.touches.length >= 2;
+          case "wheel":
+            return event.ctrlKey;
+          default:
+            return true;
+        }
+      })
       .on("zoom", (event) => {
         const { x, y, k } = event.transform;
         const next = { scale: k, x, y };
@@ -56,6 +68,17 @@ export function World({
 
     selection.call(behavior);
 
+    const handleWheel = (event: WheelEvent) => {
+      if (event.ctrlKey) {
+        return;
+      }
+      event.preventDefault();
+      const { k } = zoomTransform(viewport);
+      behavior.translateBy(selection, -event.deltaX / k, -event.deltaY / k);
+    };
+
+    viewport.addEventListener("wheel", handleWheel, { passive: false });
+
     const initial = getSavedCamera();
 
     selection.call(
@@ -64,6 +87,7 @@ export function World({
     );
 
     return () => {
+      viewport.removeEventListener("wheel", handleWheel);
       selection.on(".zoom", null);
     };
   }, []);
@@ -83,7 +107,7 @@ export function World({
   return (
     <>
       <div
-        className="h-screen w-screen cursor-grab touch-none select-none overflow-hidden active:cursor-grabbing"
+        className="h-screen w-screen cursor-default touch-none select-none overflow-hidden"
         // blur
         // onClick={() => console.log("blur")}
         ref={viewportRef}

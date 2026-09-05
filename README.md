@@ -19,4 +19,4 @@ the core interaction is: add a note, pick a color for it, drag it anywhere, done
 - [ ] change note color
 - [ ] search
 - [ ] customizable font
-- [ ] two-finger pan
+- [x] two-finger pan
