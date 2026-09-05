@@ -5,6 +5,7 @@ import { select } from "d3-selection";
 import { CheckIcon, XIcon } from "lucide-react";
 import {
   type ChangeEvent,
+  type MouseEvent,
   useCallback,
   useEffect,
   useRef,
@@ -53,6 +54,9 @@ export function Note({
 
     const behavior = drag<HTMLDivElement, unknown>()
       .filter((event) => {
+        if (event.target && (event.target as HTMLElement).closest("a")) {
+          return false;
+        }
         if ("touches" in event && event.touches.length > 1) {
           return false;
         }
@@ -133,6 +137,12 @@ export function Note({
     updateNoteInDb(note.id, { text });
   }, [note.id, text]);
 
+  const handleAnchorClick = useCallback(
+    (e: MouseEvent<HTMLAnchorElement, globalThis.MouseEvent>) =>
+      e.stopPropagation(),
+    []
+  );
+
   return (
     <Dialog.Root onOpenChange={setIsEditDialogOpen} open={isEditDialogOpen}>
       <Dialog.Trigger
@@ -140,7 +150,7 @@ export function Note({
         render={
           <div
             className={cn(
-              "absolute flex w-sm cursor-grab touch-none select-none flex-col gap-2 overflow-hidden rounded-sm p-4 font-medium shadow-md [&_*]:pointer-events-none",
+              "absolute flex w-sm cursor-grab touch-none select-none flex-col gap-2 overflow-hidden rounded-sm p-4 font-medium shadow-md **:pointer-events-none [&_a]:pointer-events-auto [&_a]:cursor-pointer",
               COLORS[note.color]
             )}
             ref={elementRef}
@@ -152,6 +162,7 @@ export function Note({
                   <a
                     className="underline"
                     href={href}
+                    onClick={handleAnchorClick}
                     rel="noopener"
                     target="_blank"
                   >
