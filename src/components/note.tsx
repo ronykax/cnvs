@@ -38,6 +38,7 @@ export function Note({
 }) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [text, setText] = useState(note.text);
+  const [color, setColor] = useState(note.color);
 
   const elementRef = useRef<HTMLDivElement | null>(null);
   const cameraRef = useRef(camera);
@@ -127,15 +128,21 @@ export function Note({
     []
   );
 
+  const handleColorChange = useCallback(
+    (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) =>
+      setColor(e.currentTarget.value as Color),
+    []
+  );
+
   useHotkeys("mod+enter", () => handleSave(), {
     enableOnFormTags: ["textarea"],
   });
 
   const handleSave = useCallback(() => {
     setIsEditDialogOpen(false);
-    useWorldStore.getState().updateNote(note.id, { text });
-    updateNoteInDb(note.id, { text });
-  }, [note.id, text]);
+    useWorldStore.getState().updateNote(note.id, { color, text });
+    updateNoteInDb(note.id, { color, text });
+  }, [color, note.id, text]);
 
   const handleAnchorClick = useCallback(
     (e: MouseEvent<HTMLAnchorElement, globalThis.MouseEvent>) =>
@@ -195,7 +202,7 @@ export function Note({
                   const isTask = className?.includes("task-list-item");
                   return (
                     <li className={className}>
-                      {!isTask && <strong className="mr-1.25 ml-0.5">•</strong>}{" "}
+                      {!isTask && <span className="mr-1.25 ml-0.5">•</span>}{" "}
                       {children}
                     </li>
                   );
@@ -226,15 +233,32 @@ export function Note({
             </Dialog.Description>
           </div>
 
+          <div className="mt-4 flex gap-2">
+            {Object.entries(COLORS).map(([k, v]) => (
+              <button
+                className={cn(
+                  "flex size-full h-8 items-center justify-center rounded-sm",
+                  v
+                )}
+                disabled={color === k}
+                key={k}
+                onClick={handleColorChange}
+                type="button"
+                value={k}
+              >
+                {color === k ? <CheckIcon className="size-4" /> : null}
+              </button>
+            ))}
+          </div>
+
           <textarea
             className={cn(
               "mt-4 block min-h-96 w-full resize-none rounded-sm p-4 font-mono font-semibold tracking-tighter focus:outline-none",
-              COLORS[note.color]
+              COLORS[color]
             )}
             onChange={handleTextChange}
             value={text}
           />
-
           <div className="mt-4 flex gap-4">
             <Dialog.Close
               render={
