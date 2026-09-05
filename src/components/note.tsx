@@ -48,12 +48,33 @@ export function Note({
       return;
     }
 
+    let startX = 0;
+    let startY = 0;
+
     const behavior = drag<HTMLDivElement, unknown>()
+      .filter((event) => {
+        if ("touches" in event && event.touches.length > 1) {
+          return false;
+        }
+        return !(event.ctrlKey || event.button);
+      })
       .on("start", (event) => {
+        const current = useWorldStore.getState().notes[note.id];
+        startX = current.x;
+        startY = current.y;
+        if (
+          "touches" in event.sourceEvent &&
+          event.sourceEvent.touches.length > 1
+        ) {
+          return;
+        }
         event.sourceEvent.stopPropagation();
         node.style.cursor = "grabbing";
       })
       .on("drag", (event) => {
+        if (event.sourceEvent.touches && event.sourceEvent.touches.length > 1) {
+          return;
+        }
         select(node).raise();
         const current = useWorldStore.getState().notes[note.id];
         useWorldStore.getState().updateNote(note.id, {
@@ -64,12 +85,34 @@ export function Note({
       .on("end", () => {
         node.style.cursor = "";
         const current = useWorldStore.getState().notes[note.id];
+        if (current.x === startX && current.y === startY) {
+          return;
+        }
         updateNoteInDb(note.id, { x: current.x, y: current.y });
       });
 
     select(node).call(behavior);
 
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length >= 2 && typeof TouchEvent !== "undefined") {
+        node.dispatchEvent(
+          new TouchEvent("touchcancel", {
+            bubbles: true,
+            changedTouches: Array.from(e.touches),
+          })
+        );
+      }
+    };
+
+    window.addEventListener("touchstart", handleTouchStart, {
+      capture: true,
+      passive: true,
+    });
+
     return () => {
+      window.removeEventListener("touchstart", handleTouchStart, {
+        capture: true,
+      });
       select(node).on(".drag", null);
     };
   }, [note.id]);
@@ -97,7 +140,7 @@ export function Note({
         render={
           <div
             className={cn(
-              "absolute flex w-sm cursor-grab flex-col gap-2 overflow-hidden rounded-sm p-4 font-medium shadow-md",
+              "absolute flex w-sm cursor-grab touch-none select-none flex-col gap-2 overflow-hidden rounded-sm p-4 font-medium shadow-md [&_*]:pointer-events-none",
               COLORS[note.color]
             )}
             ref={elementRef}

@@ -12,18 +12,6 @@ import { Note } from "./note";
 
 const INITIAL_CAMERA: Camera = { scale: 1, x: 0, y: 0 };
 
-function getSavedCamera(): Camera {
-  if (typeof window === "undefined") {
-    return INITIAL_CAMERA;
-  }
-  try {
-    const saved = localStorage.getItem("camera");
-    return saved ? JSON.parse(saved) : INITIAL_CAMERA;
-  } catch {
-    return INITIAL_CAMERA;
-  }
-}
-
 export function World({
   initialNotes,
 }: {
@@ -63,7 +51,6 @@ export function World({
         const { x, y, k } = event.transform;
         const next = { scale: k, x, y };
         setCamera(next);
-        localStorage.setItem("camera", JSON.stringify(next));
       });
 
     selection.call(behavior);
@@ -79,11 +66,11 @@ export function World({
 
     viewport.addEventListener("wheel", handleWheel, { passive: false });
 
-    const initial = getSavedCamera();
-
     selection.call(
       behavior.transform,
-      zoomIdentity.translate(initial.x, initial.y).scale(initial.scale)
+      zoomIdentity
+        .translate(INITIAL_CAMERA.x, INITIAL_CAMERA.y)
+        .scale(INITIAL_CAMERA.scale)
     );
 
     return () => {
@@ -102,21 +89,38 @@ export function World({
     });
   }, []);
 
-  const dotRadius = Math.max(0.5, 1.5 * camera.scale);
-
   return (
     <>
       <div
-        className="h-screen w-screen cursor-default touch-none select-none overflow-hidden"
+        className="relative h-screen w-screen cursor-default touch-none select-none overflow-hidden"
         // blur
         // onClick={() => console.log("blur")}
         ref={viewportRef}
-        style={{
-          backgroundImage: `radial-gradient(circle, rgba(0,0,0,0.35) ${dotRadius}px, transparent ${dotRadius}px)`,
-          backgroundPosition: `${camera.x}px ${camera.y}px`,
-          backgroundSize: `${32 * camera.scale}px ${32 * camera.scale}px`,
-        }}
       >
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 size-full"
+        >
+          <defs>
+            <pattern
+              height={32 * camera.scale}
+              id="dots"
+              patternUnits="userSpaceOnUse"
+              width={32 * camera.scale}
+              x={camera.x}
+              y={camera.y}
+            >
+              <circle
+                cx={(32 * camera.scale) / 2}
+                cy={(32 * camera.scale) / 2}
+                fill="rgba(0,0,0,0.35)"
+                r={Math.max(0.5, 1.5 * camera.scale)}
+              />
+            </pattern>
+          </defs>
+          <rect fill="url(#dots)" height="100%" width="100%" />
+        </svg>
+
         <div
           className="relative"
           style={{
