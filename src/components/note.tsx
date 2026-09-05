@@ -159,20 +159,15 @@ export function Note({
         </a>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Backdrop className="fixed inset-0 min-h-dvh bg-black/10 backdrop-blur-sm" />
-        <Dialog.Popup
-          className={cn(
-            "fixed top-1/2 left-1/2 w-xs -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-sm shadow-md md:w-sm",
-            COLORS[note.color]
-          )}
-        >
-          <div className="flex flex-col gap-1 p-4">
+        <Dialog.Backdrop className="fixed inset-0 min-h-dvh bg-black/7.5 backdrop-blur-sm" />
+        <Dialog.Popup className="fixed top-1/2 left-1/2 w-xs -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-sm bg-white p-4 shadow-md md:w-sm">
+          <div className="flex flex-col gap-1">
             <Dialog.Title className="font-bold">
               January 20, 2008 at 7:39 PM
             </Dialog.Title>
             <Dialog.Description className="font-medium text-sm opacity-80">
               Use{" "}
-              <span className="rounded-sm bg-black/10 px-1 font-mono font-semibold tracking-tight">
+              <span className="rounded-sm bg-black/7.5 px-1 font-mono font-semibold tracking-tight">
                 cmd + return
               </span>{" "}
               to save.
@@ -180,16 +175,19 @@ export function Note({
           </div>
 
           <textarea
-            className="block min-h-96 w-full resize-none rounded-sm bg-black/10 p-4 font-medium focus:outline-none"
+            className={cn(
+              "mt-4 block min-h-96 w-full resize-none rounded-sm p-4 font-mono font-semibold tracking-tighter focus:outline-none",
+              COLORS[note.color]
+            )}
             onChange={handleTextChange}
             value={text}
           />
 
-          <div className="flex">
+          <div className="mt-4 flex gap-4">
             <Dialog.Close
               render={
                 <button
-                  className="flex w-full items-center justify-center gap-2 bg-red-400 px-3 py-2 font-medium shadow-sm"
+                  className="flex w-full items-center justify-center gap-2 rounded-sm bg-red-400 px-3 py-2 font-medium shadow-sm"
                   type="button"
                 />
               }
@@ -200,7 +198,7 @@ export function Note({
             <Dialog.Close
               render={
                 <button
-                  className="flex w-full items-center justify-center gap-2 bg-green-400 px-3 py-2 font-medium shadow-sm"
+                  className="flex w-full items-center justify-center gap-2 rounded-sm bg-green-400 px-3 py-2 font-medium shadow-sm"
                   onClick={handleSave}
                   type="button"
                 />

@@ -88,7 +88,7 @@ export function World({
         // onClick={() => console.log("blur")}
         ref={viewportRef}
         style={{
-          backgroundImage: `radial-gradient(circle, rgba(0,0,0,0.5) ${dotRadius}px, transparent ${dotRadius}px)`,
+          backgroundImage: `radial-gradient(circle, rgba(0,0,0,0.35) ${dotRadius}px, transparent ${dotRadius}px)`,
           backgroundPosition: `${camera.x}px ${camera.y}px`,
           backgroundSize: `${32 * camera.scale}px ${32 * camera.scale}px`,
         }}
@@ -104,6 +104,13 @@ export function World({
             <Note camera={camera} key={note.id} note={note} />
           ))}
         </div>
+      </div>
+
+      <div className="fixed bottom-0 left-0 flex items-center gap-2 rounded-tr-sm bg-zinc-100 px-4 py-2 font-mono text-xs">
+        <span>{camera.scale.toFixed(3)}</span>
+        <div className="h-2.5 w-px bg-black" />
+        <span>{camera.x.toFixed(3)}</span>
+        <span>{camera.y.toFixed(3)}</span>
       </div>
 
       <button

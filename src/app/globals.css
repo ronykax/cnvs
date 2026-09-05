@@ -2,7 +2,7 @@
 @plugin "@tailwindcss/typography";
 
 :root {
-  --background: rgba(245, 224, 140, 0.15);
+  --background: #ffffff;
   --foreground: #000000;
 
   --pastel-yellow: #f5e08c;
@@ -11,7 +11,7 @@
   --pastel-blue: #a9d3e8;
   --pastel-green: #b9d99a;
   --pastel-orange: #eec290;
-  --pastel-purple: #c9b3e0;
+  --pastel-purple: #d3c0e7;
 }
 
 @theme inline {
