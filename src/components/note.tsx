@@ -10,6 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { updateNoteInDb } from "@/app/actions";
@@ -34,9 +35,10 @@ export function Note({
   camera: Camera;
   note: typeof notesTable.$inferSelect;
 }) {
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [text, setText] = useState(note.text);
-  const elementRef = useRef<HTMLDivElement | null>(null);
 
+  const elementRef = useRef<HTMLDivElement | null>(null);
   const cameraRef = useRef(camera);
   cameraRef.current = camera;
 
@@ -76,13 +78,18 @@ export function Note({
     []
   );
 
+  useHotkeys("mod+enter", () => handleSave(), {
+    enableOnFormTags: ["textarea"],
+  });
+
   const handleSave = useCallback(() => {
+    setIsEditDialogOpen(false);
     useWorldStore.getState().updateNote(note.id, { text });
     updateNoteInDb(note.id, { text });
   }, [note.id, text]);
 
   return (
-    <Dialog.Root>
+    <Dialog.Root onOpenChange={setIsEditDialogOpen} open={isEditDialogOpen}>
       <Dialog.Trigger
         nativeButton={false}
         render={
@@ -93,71 +100,60 @@ export function Note({
             )}
             ref={elementRef}
             style={{ left: note.x, top: note.y }}
-          />
-        }
-      >
-        <Markdown
-          components={{
-            a: ({ children, href }) => (
-              <a
-                className="underline"
-                href={href}
-                rel="noopener"
-                target="_blank"
-              >
-                {children}
-              </a>
-            ),
-            blockquote: ({ children }) => (
-              <blockquote className="font-serif italic">{children}</blockquote>
-            ),
-            h1: ({ children }) => (
-              <h1 className="font-bold text-2xl">{children}</h1>
-            ),
-            h2: ({ children }) => (
-              <h2 className="font-bold text-xl">{children}</h2>
-            ),
-            h3: ({ children }) => (
-              <h3 className="font-bold text-lg">{children}</h3>
-            ),
-            input: ({ checked, type }) => (
-              <input
-                checked={checked}
-                className={type === "checkbox" ? "mr-1" : ""}
-                readOnly
-                type={type}
-              />
-            ),
-            li: ({ children, className }) => {
-              const isTask = className?.includes("task-list-item");
-              return (
-                <li className={className}>
-                  {!isTask && <strong className="mr-1.25 ml-0.5">•</strong>}{" "}
-                  {children}
-                </li>
-              );
-            },
-            ul: ({ children }) => <ul>{children}</ul>,
-          }}
-          remarkPlugins={[remarkGfm]}
-        >
-          {note.text}
-        </Markdown>
-
-        <a className="absolute right-0 bottom-0 size-5" href="/">
-          <svg
-            aria-label="edit note"
-            className="size-full"
-            fill="none"
-            height="1"
-            viewBox="0 0 1 1"
-            width="1"
-            xmlns="http://www.w3.org/2000/svg"
           >
-            <path d="M0 1L0.5 0.5L1 0V1H0Z" fill="rgba(0,0,0,0.25)" />
-          </svg>
-        </a>
-      </Dialog.Trigger>
+            <Markdown
+              components={{
+                a: ({ children, href }) => (
+                  <a
+                    className="underline"
+                    href={href}
+                    rel="noopener"
+                    target="_blank"
+                  >
+                    {children}
+                  </a>
+                ),
+                blockquote: ({ children }) => (
+                  <blockquote className="font-serif italic">
+                    {children}
+                  </blockquote>
+                ),
+                h1: ({ children }) => (
+                  <h1 className="font-bold text-2xl">{children}</h1>
+                ),
+                h2: ({ children }) => (
+                  <h2 className="font-bold text-xl">{children}</h2>
+                ),
+                h3: ({ children }) => (
+                  <h3 className="font-bold text-lg">{children}</h3>
+                ),
+                input: ({ checked, type }) => (
+                  <input
+                    checked={checked}
+                    className={type === "checkbox" ? "mr-1" : ""}
+                    readOnly
+                    type={type}
+                  />
+                ),
+                li: ({ children, className }) => {
+                  const isTask = className?.includes("task-list-item");
+                  return (
+                    <li className={className}>
+                      {!isTask && <strong className="mr-1.25 ml-0.5">•</strong>}{" "}
+                      {children}
+                    </li>
+                  );
+                },
+                ul: ({ children }) => <ul>{children}</ul>,
+              }}
+              remarkPlugins={[remarkGfm]}
+            >
+              {note.text}
+            </Markdown>
+          </div>
+        }
+      />
+
       <Dialog.Portal>
         <Dialog.Backdrop className="fixed inset-0 min-h-dvh bg-black/7.5 backdrop-blur-sm" />
         <Dialog.Popup className="fixed top-1/2 left-1/2 w-xs -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-sm bg-white p-4 shadow-md md:w-sm">
